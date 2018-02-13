@@ -5,21 +5,13 @@
         'background-color' :'black',
         'color' : 'yellow',
         'display' : 'inline-block',
-        'border' : 'solid 1px white',
-        'textAlign' : 'center',
-        'width' : '30px',
-        'height' : '30px',
-        'font-weight' : 'bolder'
+        'border' : 'solid 1px white'
     };
     let css_noir = {
         'background-color' :'yellow',
         'color' : 'black',
         'display' : 'inline-block',
         'border' : 'solid 1px black',
-        'textAlign' : 'center',
-        'width' : '30px',
-        'height' : '30px',
-        'font-weight' : 'bolder'
     };
     let css_surbrillance = {
         'background-color' : 'red',
@@ -42,7 +34,6 @@
         /* on peut travailler sur le DOM */
 
         new Damier(3,3,'#damier');
-
 
         let case_blanche = $(".case-blanche");
         let case_noire = $(".case-noire");

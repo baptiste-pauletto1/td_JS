@@ -10,6 +10,13 @@ let Damier;
         this.joueur_un = true;
         this.tab = [];
 
+        $('.indicateur').fadeIn(1000).html('Au tour du joueur' + (self.joueur_un ?' 1 ': ' 2 '))
+
+        this.get_carac_joueur = function () {
+            return (this.joueur_un ? '\u2718' : 'O');
+        };
+
+/*      Version 3*3
         this.test_victoire = function () {
             for(let i = 0;i<self.hauteur-2;++i){
                 for(let y = 0;y<self.largeur-2;++y) {
@@ -31,12 +38,11 @@ let Damier;
                     }
                 }
             }
-        };
+        };*/
 
-        this.get_carac_joueur = function () {
-            return (this.joueur_un ? '\u2718' : '\u2B24');
-        };
 
+
+// Version modulable
         this.nb_elems_identiques = function (x_start,y_start,addx,addy) {
             let x = x_start;
             let y = y_start;
@@ -87,10 +93,14 @@ let Damier;
                 let y = $(this).data('y');
                 $(this).html(self.get_carac_joueur());
                 self.tab[x][y] = self.joueur_un;
+                let person = (self.joueur_un ? " 1 " : " 2 ");
                 if (self.ligne_faite()) {
-                    $(this).html("salut à tous les dragons");
+                    //$(this).destination.slideUp(1000);
+                    $('.indicateur').html('Gagné par le joueur : ' + person);
+                    $(this).slideUp(2000);
                 } else {
                     self.joueur_un = !self.joueur_un;
+                    $('.indicateur').html('Au tour du joueur' + person)
                 }
         };
 
