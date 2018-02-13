@@ -3,14 +3,22 @@
     "use strict";
     let css_blanc = {
         'background-color' :'black',
-        'color' : 'white',
+        'color' : 'yellow',
+        'display' : 'inline-block',
         'border' : 'solid 1px white',
+        'textAlign' : 'center',
+        'width' : '30px',
+        'height' : '30px',
         'font-weight' : 'bolder'
     };
     let css_noir = {
-        'background-color' :'white',
+        'background-color' :'yellow',
         'color' : 'black',
+        'display' : 'inline-block',
         'border' : 'solid 1px black',
+        'textAlign' : 'center',
+        'width' : '30px',
+        'height' : '30px',
         'font-weight' : 'bolder'
     };
     let css_surbrillance = {
@@ -30,56 +38,11 @@
         $(this).css(css_noir);
     };
 
-    let creer_case_noire = function () {
-        return $('<td />').addClass('case-noire').html('N');
-    };
-    let creer_case_blanche = function () {
-        return $('<td />').addClass('case-blanche').html('B');
-    };
-
-    function Damier(h,l,dest) {
-        this.hauteur = h || 8;
-        this.largeur = l || 8;
-        let damier = $(dest);
-
-        for (let i = 0;i<this.hauteur;++i){
-            let tmpColumn = $('<tr />'),fn1 ,fn2;
-            if(i%2){
-                fn1 = creer_case_blanche;
-                fn2 = creer_case_noire;
-            } else {
-                fn1 = creer_case_noire;
-                fn2 = creer_case_blanche;
-            }
-            for (let j = 0;j<this.largeur;j++) {
-                j%2 ? tmpColumn.append(fn1)
-                    : tmpColumn.append(fn2);
-            }
-            damier.append(tmpColumn);
-        }
-    }
-
     $(() => {// new version du $(document).ready
         /* on peut travailler sur le DOM */
 
+        new Damier(3,3,'#damier');
 
-/*        for (let i = 0;i<8;i++) {
-            let tmpColumn = $('<tr />'), fn1, fn2;
-            if(i%2){
-                fn1 = creer_case_blanche;
-                fn2 = creer_case_noire;
-            } else {
-                fn1 = creer_case_noire;
-                fn2 = creer_case_blanche;
-            }
-            for (let j = 0;j<8;j++) {
-                j%2 ? tmpColumn.append(fn1)
-                    : tmpColumn.append(fn2);
-            }
-            $("#damier").append(tmpColumn);
-        }*/
-
-        new Damier(15,15,'#damier')
 
         let case_blanche = $(".case-blanche");
         let case_noire = $(".case-noire");
@@ -88,7 +51,4 @@
 
         case_noire.css(css_noir).hover(goLight,goBlack);
     })
-
-
-
 }) ();
