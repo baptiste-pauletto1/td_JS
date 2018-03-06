@@ -35,32 +35,30 @@
     // };
 
     let css_lake = {
-        //'background-image' :"url('../sprites/lake50.png')",
-        'background-color' : 'blue',
+        'background-image' :"url('../sprites/lake50.png')",
         'width' : '50px',
         'height' : '50px',
-        'display' : 'inline-block',
-        'border' : 'solid 1px black'
+        'display' : 'inline-block'
     };
 
     let css_village = {
         'background-image' :"url('/sprites/village50.png')",
         'width' : '50px',
         'height' : '50px',
-        'display' : 'inline-block',
-        'border' : 'solid 1px black'
+        'display' : 'inline-block'
     };
 
     let css_forest = {
         'background-image' :"url('/sprites/forest50.png')",
         'width' : '50px',
         'height' : '50px',
-        'display' : 'inline-block',
-        'border' : 'solid 1px black'
+        'display' : 'inline-block'
     };
 
     $(() => {// new version du $(document).ready
         /* on peut travailler sur le DOM */
+
+
 
         $('#form-genmapTest').submit(function () {
             $.ajax({
@@ -70,10 +68,10 @@
             })
                 .done(function (data) {
                     new MapM(5,5,'#map',data);
+
                     $(".lake_case").css(css_lake);
                     $(".village_case").css(css_village);
                     $(".forest_case").css(css_forest);
-
                 })
                 .fail(function () {
                     $("body").html(erreurCritique);

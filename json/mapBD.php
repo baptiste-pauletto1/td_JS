@@ -10,14 +10,14 @@ $resultat->message = " "; // Error displaying
 
 $pdo = getDb();
 $sql1 = "SELECT * FROM MAP";
-$stmtU = $pdo->prepare($sql1);
+$stmt = $pdo->prepare($sql1);
 try
 {
     $mapM = array();
-    $stmtU->execute();
-    $stmtU->setFetchMode(PDO::FETCH_ASSOC);
-    for ($i = 0;$i<$stmtU->rowCount();++$i){
-        $tmp = $stmtU->fetch();
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    for ($i = 0;$i<$stmt->rowCount();++$i){
+        $tmp = $stmt->fetch();
         $mapM[$tmp['POS_X']][$tmp['POS_Y']] = $tmp['ATTRIBUTS'];
     }
 }
