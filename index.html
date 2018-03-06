@@ -18,18 +18,16 @@
         <!--[if lte IE 9]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
         <![endif]-->
+        <form id="form-genmapTest" action="/json/mapBD.php" method="post">
+            <input type="submit" value="go stp"/>
+        </form>
         <p class="indicateur"></p>
-        <div id="damier"></div>
+        <div id="map"></div>
         <script src="js/vendor/modernizr-3.5.0.min.js"></script>
         <script src="js/vendor/jquery-3.2.1.min.js"></script>
         <script src="js/plugins.js"></script>
-        <script src="js/damier.js"></script>
+        <script src="js/test.js"></script>
         <script src="js/main.js"></script>
 
-        <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
-        <script>
-            window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
-            ga('create','UA-XXXXX-Y','auto');ga('send','pageview')
-        </script>
     </body>
 </html>
