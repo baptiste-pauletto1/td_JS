@@ -55,29 +55,99 @@
         'display' : 'inline-block'
     };
 
+    // function updateActualPosition(pos_x,pos_y,dest) {
+    //     let map = $(dest);
+    //     map.actualPlayerPosition(pos_x,pos_y);
+    // }
+
     $(() => {// new version du $(document).ready
         /* on peut travailler sur le DOM */
 
-
-
-        $('#form-genmapTest').submit(function () {
+        $('#form_CreateMap').submit(function () {
             $.ajax({
                 url: $(this).attr('action'),
                 method: $(this).attr('method'),
                 data: $(this).serialize(),
             })
                 .done(function (data) {
-                    new MapM(5,5,'#map',data);
+                    let map = new MapM(5,5,'#map',data);
 
                     $(".lake_case").css(css_lake);
                     $(".village_case").css(css_village);
                     $(".forest_case").css(css_forest);
                 })
                 .fail(function () {
-                    $("body").html(erreurCritique);
+                    $("body").html('erreurCritique');
                 });
             return false;
         });
+
+        //Pokémon like version of the map
+
+        /*$('#changeMapTop').click(function () {
+            $.ajax({
+                url: '/json/posUpdateTop.php',
+            })
+                .done(function (data) {
+                    if(data.result){
+                        updateActualPosition(data.pos[0],data.pos[1],'#map');
+                    } else {
+                        console.log(data.message);
+                    }
+                })
+                .fail(function () {
+                    $("body").html('erreurCritique');
+                })
+
+        });
+
+        $('#changeMapLeft').click(function () {
+            $.ajax({
+                url: '/json/posUpdateLeft.php',
+            })
+                .done(function (data) {
+                    if(data.result){
+                        updateActualPosition(data.pos[0],data.pos[1],'#map');
+                    } else {
+                        console.log(data.message);
+                    }
+                })
+                .fail(function () {
+                    $("body").html('erreurCritique');
+                })
+        });
+
+        $('#changeMapRight').click(function () {
+            $.ajax({
+                url: '/json/posUpdateRight.php',
+            })
+                .done(function (data) {
+                    if(data.result){
+                        updateActualPosition(data.pos[0],data.pos[1],'#map');
+                    } else {
+                        console.log(data.message);
+                    }
+                })
+                .fail(function () {
+                    $("body").html('erreurCritique');
+                })
+        });
+
+        $('#changeMapBottom').click(function () {
+            $.ajax({
+                url: '/json/posUpdateBottom.php',
+            })
+                .done(function (data) {
+                    if(data.result){
+                        updateActualPosition(data.pos[0],data.pos[1],'#map');
+                    } else {
+                        console.log(data.message);
+                    }
+                })
+                .fail(function () {
+                    $("body").html('erreurCritique');
+                })
+        });*/
 
 
         //ajouter result du json en dernier param
