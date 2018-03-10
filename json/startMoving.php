@@ -33,6 +33,8 @@ $distY = abs($tmp['POS_Y']-$_POST['POS_Y_DEST']);
 
 $timeLength = $distX + $distY;
 
+$resultat->timeLength = ($timeLength * 10000) + 300;
+
 $sqlInsert = "INSERT INTO PATH(ID_PLAYER, POS_X, POS_Y, TIME_START, TIME_LENGTH) VALUES (:id, :pos_x, :pos_y, :time_start, :time_length)";
 
 $stmtInsert = $pdo->prepare($sqlInsert);

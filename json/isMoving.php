@@ -48,6 +48,7 @@ try
         } else {
             $resultat->result = true;
             $resultat->message = "Still moving";
+            $resultat->time = strtotime($timeStart) + $timeLength - strtotime(date("Y-m-d H:i:s"));
         }
     } else {
         $resultat->result = false;

@@ -2,10 +2,6 @@ let MapM;
 (function () {
     "use strict";
 
-    let css_test = {
-        'background-color' : 'blue'
-    };
-
     MapM = function (h, l, dest, data) {
         this.hauteur = h || 5;
         this.largeur = l || 5;
@@ -15,6 +11,22 @@ let MapM;
 
         $('.indicateur').html('slt');
 
+        function isMoving() {
+            $.ajax({
+                url: '/json/isMoving.php'
+            })
+                .done(function (data) {
+                    if(data.result){
+                        clearTimeout(timeCheck);
+                        setTimeout(timeCheck,data.time)
+                    }
+                })
+                .fail(function () {
+                    $('body').html(data.msg);
+                })
+            ;
+        }
+
         this.click_case = function () {
             let x = $(this).data('x');
             let y = $(this).data('y');
@@ -22,9 +34,7 @@ let MapM;
                 url:'/json/isMoving.php'
             })
                 .done(function (data) {
-                    if(data.result){
-                        //setTimeout() à gérer
-                    } else {
+                    if(!data.result) {
                         $.ajax({
                             url:'/json/startMoving.php',
                             type: 'POST',
@@ -32,7 +42,9 @@ let MapM;
                         })
                             .done(function (data) {
                                 if (data.result){
-                                    console.log('Works fine');
+                                    let timeCheck = setTimeout(function () {
+                                        isMoving();
+                                    },data.timeLength)
                                 } else {
                                     $('body').html(data.msg);
                                 }
@@ -40,6 +52,8 @@ let MapM;
                             .fail(function () {
                                 $('body').html(data.msg);
                             });
+                    } else {
+                        isMoving();
                     }
                 }).fail(function () {
                     $('body').html(data.msg);
