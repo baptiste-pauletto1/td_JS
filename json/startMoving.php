@@ -13,7 +13,7 @@ $pdo = getDb();
 $sqlTimeLength = "SELECT POS_X, POS_Y FROM POSITION WHERE ID_PLAYER = :id";
 
 $stmtTimeLength = $pdo->prepare($sqlTimeLength);
-$stmtTimeLength->bindValue('id', 1, PDO::PARAM_INT); // _SESSION['ID']
+$stmtTimeLength->bindValue('id', 1, PDO::PARAM_INT);
 try
 {
     $stmtTimeLength->execute();
@@ -31,21 +31,20 @@ catch (PDOException $e)
 $distX = abs($tmp['POS_X']-$_POST['POS_X_DEST']);
 $distY = abs($tmp['POS_Y']-$_POST['POS_Y_DEST']);
 
-$timeLength = $distX + $distY;
+$timeLength = ($distX + $distY) * 3000;
 
-$resultat->timeLength = ($timeLength * 10000) + 300;
+$resultat->timeLength = $timeLength;
 
 $sqlInsert = "INSERT INTO PATH(ID_PLAYER, POS_X, POS_Y, TIME_START, TIME_LENGTH) VALUES (:id, :pos_x, :pos_y, :time_start, :time_length)";
 
 $stmtInsert = $pdo->prepare($sqlInsert);
 
 
-$stmtInsert->bindValue('id', 1, PDO::PARAM_INT); // _SESSION['ID']
+$stmtInsert->bindValue('id', 1, PDO::PARAM_INT);
 $stmtInsert->bindValue('pos_x',$_POST['POS_X_DEST'] , PDO::PARAM_INT); // arrival position (x)
 $stmtInsert->bindValue('pos_y',$_POST['POS_Y_DEST'], PDO::PARAM_INT); // arrival position (y)
 
-$timeStart = date("Y-m-d H:i:s");
-$stmtInsert->bindValue('time_start', $timeStart,PDO::PARAM_STR); // time it started
+$stmtInsert->bindValue('time_start', $_POST['TIME_START'],PDO::PARAM_STR); // time it started
 
 $stmtInsert->bindValue('time_length', $timeLength, PDO::PARAM_INT); // length of the moving
 
