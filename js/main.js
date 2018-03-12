@@ -70,7 +70,8 @@
                 data: $(this).serialize(),
             })
                 .done(function (data) {
-                    let map = new MapM(5,5,'#map',data);
+                    let map = new mapM(5,5,'#map',data);
+                    map.createMap();
 
                     $(".lake_case").css(css_lake);
                     $(".village_case").css(css_village);

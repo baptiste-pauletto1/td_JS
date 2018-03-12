@@ -1,16 +1,20 @@
-let MapM;
+let mapM;
 (function () {
     "use strict";
 
-    MapM = function (h, l, dest, data) {
-        this.hauteur = h || 5;
-        this.largeur = l || 5;
-        let map = $(dest);
-        let self = this;
-        let timeCheck;
-        this.tab = [];
+    mapM = class mapM {
 
-        this.isMoving = function () {
+        constructor(height,width,dest,data){
+            this.height = height;
+            this.width = width;
+            this.map = $(dest);
+            this.data = data;
+            this.tab = [];
+            this.timeCheck = null;
+        }
+
+        isMoving () {
+            let self = this;
             $.ajax({
                 url: '/json/isMoving.php',
                 type: 'POST',
@@ -18,8 +22,8 @@ let MapM;
             })
                 .done(function (data) {
                     if(data.result){ // If the player is still traveling
-                        clearTimeout(timeCheck);
-                        timeCheck = setTimeout(self.isMoving,data.timeLeft);
+                        clearTimeout(self.timeCheck);
+                        self.timeCheck = setTimeout(self.isMoving,data.timeLeft);
                         console.log("Still moving");
                         console.log("Set isMoving Timeout to : " + data.timeLeft + "ms");
                     } else { //When traveling will be done
@@ -34,20 +38,13 @@ let MapM;
             ;
         };
 
-        this.initPosition = function (cb) {
-            /*
+        initPosition () {
             let self = this;
-            this.cb = cb;
-             */
-            // Merci https://stackoverflow.com/questions/1833588/javascript-clone-a-function
-            //let cbCloned = cb.bind({});
             $.ajax({
                 url: '/json/whereAmI.php',
             })
                 .done(function (data) {
                     if(data.result){ // If everything went right we look for the player's position
-                        // self.cb(data.pos['POS_X'], data.pos['POS_Y']);
-                        // cbCloned(data.pos['POS_X'], data.pos['POS_Y']);
                         self.tab[data.pos['POS_X']][data.pos['POS_Y']].attr("id","posPlayer");
                     }
                 })
@@ -57,7 +54,8 @@ let MapM;
         };
 
 
-        this.click_case = function () {
+        click_case () {
+            let self = this;
             let x = $(this).data('x');
             let y = $(this).data('y');
             $.ajax({
@@ -76,7 +74,7 @@ let MapM;
                                 if (data.result){ // If the player starts moving
                                     console.log("Travel Started !");
                                     console.log("Set isMoving Timeout to : " + data.timeLength + "ms");
-                                    timeCheck = setTimeout(self.isMoving, data.timeLength);
+                                    self.timeCheck = setTimeout(self.isMoving, data.timeLength);
                                 } else { // Erreur de déplacement ?
                                     $('body').html(data.msg);
                                 }
@@ -93,7 +91,7 @@ let MapM;
 
         };
 
-        this.create_forest_case = function (x,y) {
+        create_forest_case (x,y) {
             return $('<div />')
                 .addClass('forest_case')
                 .data('x', x)
@@ -101,7 +99,7 @@ let MapM;
                 .click(self.click_case);
         };
 
-        this.create_village_case =  (x,y) => {
+        create_village_case (x,y) {
             return $('<div />')
                 .addClass('village_case')
                 .data('x', x)
@@ -110,7 +108,7 @@ let MapM;
 
         };
 
-        this.create_lake_case = function (x,y) {
+        create_lake_case (x,y) {
             return $('<div />')
                 .addClass('lake_case')
                 .data('x', x)
@@ -118,34 +116,34 @@ let MapM;
                 .click(self.click_case);
         };
 
+        createMap() {
+            let landTypes = {
+                'FOREST': this.create_forest_case,
+                'LAKE': this.create_lake_case,
+                'VILLAGE': this.create_village_case
+            };
 
+            let fnAjouteCase = (self, fn, x, y, col) => {
+                let slot = fn(x,y);
+                col.append(slot);
+                self.tab[x].push(slot);
+            };
 
-        let fnAjouteCase = function (self, fn, x, y, col) {
-            let slot = fn(x,y);
-            col.append(slot);
-            self.tab[x].push(slot);
-        };
-
-        let landTypes = {
-            'FOREST': this.create_forest_case,
-            'LAKE': this.create_lake_case,
-            'VILLAGE': this.create_village_case
-        };
-
-        for (let x = 0;x<data.length;++x){
-            let tmpColumn = $('<div />');
-            this.tab[x] = [];
-            for (let y = 0;y<data.length;++y) {
-                let land = landTypes [ data[x][y] ];
-                if (typeof(land) !== 'undefined') {
-                    fnAjouteCase(this, land, x,y, tmpColumn);
-                } else {
-                    $('body').html("Something strange happened");
+            for (let x = 0;x<this.data.length;++x){
+                let tmpColumn = $('<div />');
+                this.tab[x] = [];
+                for (let y = 0;y<this.data.length;++y) {
+                    let land = landTypes [ this.data[x][y] ];
+                    if (typeof(land) !== 'undefined') {
+                        fnAjouteCase(this, land, x,y, tmpColumn);
+                    } else {
+                        $('body').html("Something strange happened");
+                    }
                 }
+                this.map.append(tmpColumn);
             }
-            map.append(tmpColumn);
+            console.log(this.tab);
+            this.initPosition();
         }
-        self.initPosition();
-
     };
 }) ();
