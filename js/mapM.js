@@ -8,6 +8,7 @@ let MapM;
         let map = $(dest);
         let self = this;
         let timeCheck;
+        this.tab = [];
 
         this.caca = function () {
             return 5000;
@@ -35,18 +36,21 @@ let MapM;
             ;
         };
 
-        this.whereAmI = function () {
+        this.initPosition = function (cb) {
+            /*
+            let self = this;
+            this.cb = cb;
+             */
+            // Merci https://stackoverflow.com/questions/1833588/javascript-clone-a-function
+            let cbCloned = cb.bind({});
             $.ajax({
                 url: '/json/whereAmI.php',
             })
                 .done(function (data) {
                     if(data.result){ // If everything went right we look for the player's position
-                        let posTab = [];
-                        posTab['POS_X'] = data.pos['POS_X'];
-                        posTab['POS_Y'] = data.pos['POS_Y'];
-                        console.log(posTab);
-                        console.log(Array.isArray(posTab));
-                        return posTab;
+                        // self.cb(data.pos['POS_X'], data.pos['POS_Y']);
+                        // cbCloned(data.pos['POS_X'], data.pos['POS_Y']);
+                        self.drawPlayer(data.pos['POS_X'],data.pos['POS_Y'])
                     }
                 })
                 .fail(function () {
@@ -54,7 +58,8 @@ let MapM;
                 })
         };
 
-        this.positionPlayer = function(pos_x,pos_y){
+        this.drawPlayer = function(pos_x,pos_y){
+            //$('div').data[] = this.tab[pos_x];
         };
 
         this.click_case = function () {
@@ -102,7 +107,7 @@ let MapM;
                 .click(self.click_case);
         };
 
-        this.create_village_case = function (x,y) {
+        this.create_village_case =  (x,y) => {
             return $('<div />')
                 .addClass('village_case')
                 .data('x', x)
@@ -119,36 +124,42 @@ let MapM;
                 .click(self.click_case);
         };
 
-        this.addPlayerCarac = function () {
-            $('<div />').attr('id', 'playerPos');
+        self.initPosition(function (x, y) {
+           console.log(x,y);
+           console.log(x,y);
+           console.log(x,y);
+           console.log(x,y);
+           console.log(x,y);
+           console.log(x,y);
+           console.log(x,y);
+        });
+
+        let fnAjouteCase = function (self, fn, x, y, col) {
+            let slot = fn(x,y);
+            col.append(slot);
+            self.tab[x].push(slot);
         };
 
+        let landTypes = {
+            'FOREST': this.create_forest_case,
+            'LAKE': this.create_lake_case,
+            'VILLAGE': this.create_village_case
+        };
 
-        let actualPlayerPos = [];
-        actualPlayerPos = this.whereAmI();
         for (let x = 0;x<data.length;++x){
             let tmpColumn = $('<div />');
+            this.tab[x] = [];
             for (let y = 0;y<data.length;++y) {
-                switch (data[x][y]) {
-                    case 'FOREST' :
-                        tmpColumn.append(this.create_forest_case(x,y));
-                        break;
-                    case 'LAKE':
-                        tmpColumn.append(this.create_lake_case(x,y));
-                        break;
-                    case 'VILLAGE' :
-                        tmpColumn.append(this.create_village_case(x,y));
-                        break;
-                    default:
-                        $('body').html("ERRRRREUR");
-                        break;
-                }
-                if (actualPlayerPos['POS_X'] === data[x] && actualPlayerPos['POS_Y'] === data[y]){
-                    tmpColumn.append(this.addPlayerCarac());
+                let land = landTypes [ data[x][y] ];
+                if (typeof(land) !== 'undefined') {
+                    fnAjouteCase(this, land, x,y, tmpColumn);
+                } else {
+                    $('body').html("Something strange happened");
                 }
             }
-
             map.append(tmpColumn);
         }
+        console.log(this.tab);
+
     };
 }) ();
