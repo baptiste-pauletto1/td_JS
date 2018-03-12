@@ -10,10 +10,6 @@ let MapM;
         let timeCheck;
         this.tab = [];
 
-        this.caca = function () {
-            return 5000;
-        };
-
         this.isMoving = function () {
             $.ajax({
                 url: '/json/isMoving.php',
@@ -21,13 +17,15 @@ let MapM;
                 data: {TIME : Date.now()}
             })
                 .done(function (data) {
-                    if(data.result){
+                    if(data.result){ // If the player is still traveling
                         clearTimeout(timeCheck);
                         timeCheck = setTimeout(self.isMoving,data.timeLeft);
                         console.log("Still moving");
                         console.log("Set isMoving Timeout to : " + data.timeLeft + "ms");
-                    } else{
+                    } else { //When traveling will be done
                         console.log("Travel finished !");
+                        self.tab[data.pos['POS_X_INIT']][data.pos['POS_Y_INIT']].removeAttr("id");
+                        self.tab[data.pos['POS_X_DEST']][data.pos['POS_Y_DEST']].attr("id","posPlayer");
                     }
                 })
                 .fail(function () {
@@ -42,7 +40,7 @@ let MapM;
             this.cb = cb;
              */
             // Merci https://stackoverflow.com/questions/1833588/javascript-clone-a-function
-            let cbCloned = cb.bind({});
+            //let cbCloned = cb.bind({});
             $.ajax({
                 url: '/json/whereAmI.php',
             })
@@ -50,7 +48,7 @@ let MapM;
                     if(data.result){ // If everything went right we look for the player's position
                         // self.cb(data.pos['POS_X'], data.pos['POS_Y']);
                         // cbCloned(data.pos['POS_X'], data.pos['POS_Y']);
-                        self.drawPlayer(data.pos['POS_X'],data.pos['POS_Y'])
+                        self.tab[data.pos['POS_X']][data.pos['POS_Y']].attr("id","posPlayer");
                     }
                 })
                 .fail(function () {
@@ -58,9 +56,6 @@ let MapM;
                 })
         };
 
-        this.drawPlayer = function(pos_x,pos_y){
-            //$('div').data[] = this.tab[pos_x];
-        };
 
         this.click_case = function () {
             let x = $(this).data('x');
@@ -71,14 +66,14 @@ let MapM;
                 data: {TIME : Date.now()}
             })
                 .done(function (data) {
-                    if(!data.result) { // Si n'est pas en déplacement.
+                    if(!data.result) { // If the player isn't moving
                         $.ajax({
                             url:'/json/startMoving.php',
                             type: 'POST',
                             data: {POS_X_DEST: x, POS_Y_DEST: y, TIME_START: Date.now()}
                         })
                             .done(function (data) {
-                                if (data.result){ //Si déplacement commencé
+                                if (data.result){ // If the player starts moving
                                     console.log("Travel Started !");
                                     console.log("Set isMoving Timeout to : " + data.timeLength + "ms");
                                     timeCheck = setTimeout(self.isMoving, data.timeLength);
@@ -89,9 +84,8 @@ let MapM;
                             .fail(function () {
                                 $('body').html(data.msg);
                             });
-                    } else { // En déplacement, l'utilisateur ne peut pas se déplacer à nouveau, on ne fait RIEN
-                        console.log("You are moving Bastard !")
-                        //self.isMoving();
+                    } else { // When the player is moving, we just wait and do nothing else.
+                        console.log("You are already moving !")
                     }
                 }).fail(function () {
                 $('body').html(data.msg);
@@ -124,15 +118,7 @@ let MapM;
                 .click(self.click_case);
         };
 
-        self.initPosition(function (x, y) {
-           console.log(x,y);
-           console.log(x,y);
-           console.log(x,y);
-           console.log(x,y);
-           console.log(x,y);
-           console.log(x,y);
-           console.log(x,y);
-        });
+
 
         let fnAjouteCase = function (self, fn, x, y, col) {
             let slot = fn(x,y);
@@ -159,7 +145,7 @@ let MapM;
             }
             map.append(tmpColumn);
         }
-        console.log(this.tab);
+        self.initPosition();
 
     };
 }) ();

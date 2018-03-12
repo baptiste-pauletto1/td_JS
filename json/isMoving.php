@@ -35,6 +35,15 @@ try
 
             $stmtDelete->execute();
 
+            $sqlInit = "SELECT POS_X, POS_Y FROM POSITION WHERE ID_PLAYER = :id";
+            $stmtInit = $pdo->prepare($sqlInit);
+            $stmtInit->bindValue('id', 1, PDO::PARAM_INT);
+
+            $stmtInit->execute();
+            $stmtInit->setFetchMode(PDO::FETCH_ASSOC);
+            $tmpInit = $stmtInit->fetch();
+            $resultat->pos['POS_X_INIT'] = $tmpInit['POS_X']; $resultat->pos['POS_Y_INIT'] = $tmpInit['POS_Y'];
+
             $sqlUpdate = "UPDATE POSITION SET POS_X = :pos_x, POS_Y =:pos_y WHERE ID_PLAYER = :id";
             $stmtUpdate = $pdo->prepare($sqlUpdate);
             $stmtUpdate->bindValue('id', 1, PDO::PARAM_INT);
